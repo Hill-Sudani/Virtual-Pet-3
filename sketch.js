@@ -35,11 +35,23 @@ function setup()
     gameState = data.val();
   }
   )
+  
+  fedTime = database.ref("fedTime");
+  fedTime.on("value",
+  function(data)
+  {
+    lastFed = data.val();
+  }
+  )
 
   foodStock = database.ref("Food");
   foodStock.on("value",readStock);
   
   dog = createSprite(500,400);
+  dog.addImage(dog1img);
+
+  dog.scale = 0.2;
+
 
   button1 = createButton("Feed The Dog");
   button1.position(700,95);
@@ -54,34 +66,7 @@ function setup()
 function draw() 
 {  
   background(46,139,87);
-
-  dog.addImage(dog1img);
-
-  dog.scale = 0.2;
-
-  fedTime = database.ref("fedTime");
-  fedTime.on("value",
-  function(data)
-  {
-    lastFed = data.val();
-  }
-  )
-
-  if(gameState !== "hungry")
-  {
-    button1.hide();
-    button2.hide();
-
-    dog.remove();
-  }
-  else
-  {
-    button1.show();
-    button2.show();
-
-    dog.addImage(dog1img);
-  }
-
+  
   currentTime = hour();
   if(currentTime === (lastFed + 1))
   {
@@ -103,29 +88,44 @@ function draw()
     update("hungry");
     foodObj.display();
   }
+  
+  if(gameState !== "hungry")
+  {
+    button1.hide();
+    button2.hide();
 
-  textSize(20);
-  fill("black");
-  if(lastFed>=12)
-  {
-    text("Last Feed : " + lastFed%12 + "PM",350,30);
-  }
-  else if(lastFed === 0)
-  {
-    text("Last Feed : 12AM",350,30);
+    dog.remove();
   }
   else
   {
-    text("Last Feed : " + lastFed + "AM",350,30);
-  }
+    button1.show();
+    button2.show();
 
-  drawSprites();
-  //add styles here
-  textSize(20);
-  fill("black")
-  text("Food Stock :- "+foodS,100,50);
-  //text("NOTE :- Press Up Arrow To Feed The Dog",50,50);
-  foodObj.display();
+    dog.addImage(dog1img);
+  }
+  
+     textSize(20);
+     fill("black");
+    if(lastFed>=12)
+    {
+      text("Last Feed : " + lastFed%12 + "PM",350,30);
+    }
+    else if(lastFed === 0)
+    {
+      text("Last Feed : 12AM",350,30);
+    }
+    else
+    {
+      text("Last Feed : " + lastFed + "AM",350,30);
+    }
+
+    drawSprites();
+    //add styles here
+//     textSize(20);
+//     fill("black")
+//     text("Food Stock :- "+foodS,100,50);
+//     //text("NOTE :- Press Up Arrow To Feed The Dog",50,50);
+//     foodObj.display();
 }
 
 function readStock(data)

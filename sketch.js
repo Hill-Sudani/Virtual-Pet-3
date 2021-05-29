@@ -29,7 +29,7 @@ function setup()
   foodObj = new food();
 
   readstate = database.ref("gameState");
-  readState.on("value",
+  readstate.on("value",
   function(data)
   {
     gameState = data.val();
